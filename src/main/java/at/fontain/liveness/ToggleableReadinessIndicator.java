@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Component
+@Component("readinessStateHealthIndicator")
 public class ToggleableReadinessIndicator extends ReadinessStateHealthIndicator {
     private static final Logger log = LoggerFactory.getLogger(ToggleableReadinessIndicator.class);
 
