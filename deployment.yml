@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liveness-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: liveness-app
+  template:
+    metadata:
+      labels:
+        app: liveness-app
+    spec:
+      containers:
+        - name: liveness-container
+          image: crisfromaustria/liveness:latest
+          ports:
+            - containerPort: 8081
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
