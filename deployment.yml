@@ -15,6 +15,9 @@ spec:
       containers:
         - name: liveness-container
           image: crisfromaustria/liveness:latest
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: cloud
           ports:
             - containerPort: 8081
           livenessProbe:
