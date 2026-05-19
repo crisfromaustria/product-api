@@ -23,7 +23,11 @@ public class ToggleableLivenessIndicator extends LivenessStateHealthIndicator {
     @Override
     public AvailabilityState getState(ApplicationAvailability applicationAvailability) {
         log.info("getState() called, live={}", live.get());
-        return live.get() ? LivenessState.CORRECT : LivenessState.BROKEN;
+
+        AvailabilityState availabilityState = super.getState(applicationAvailability);
+        log.info("super.getState() returned {}", availabilityState);
+
+        return live.get() ? availabilityState : LivenessState.BROKEN;
     }
 
     public void setLive(boolean value) {

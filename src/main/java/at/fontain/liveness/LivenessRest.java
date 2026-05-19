@@ -4,9 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.health.HealthContributorRegistry;
 import org.springframework.boot.actuate.health.HealthEndpointGroups;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,20 +21,20 @@ public class LivenessRest {
     private final CustomHealthIndicator health;
     private final HealthEndpointGroups groups;
     private final HealthContributorRegistry registry;
-    private final ServerProperties properties;
+    private final ServletWebServerApplicationContext webServerContext;
 
     public LivenessRest(ToggleableReadinessIndicator readiness,
                         ToggleableLivenessIndicator liveness,
                         CustomHealthIndicator health,
                         HealthEndpointGroups groups,
                         HealthContributorRegistry registry,
-                        ServerProperties properties) {
+                        ServletWebServerApplicationContext webServerContext) {
         this.readiness = readiness;
         this.liveness = liveness;
         this.health = health;
         this.groups = groups;
         this.registry = registry;
-        this.properties = properties;
+        this.webServerContext = webServerContext;
     }
 
     @GetMapping("/simulate/readiness/{state}")
@@ -60,14 +62,16 @@ public class LivenessRest {
     }
 
     @GetMapping("/")
-    public List<String> root() {
-        String hostname = properties.getAddress().getHostName();
-        String hostaddress = properties.getAddress().getHostAddress();
-        int port = properties.getPort();
+    public List<String> root() throws UnknownHostException {
+        InetAddress localHost = InetAddress.getLocalHost();
+        int port = webServerContext.getWebServer().getPort();
         List<String> list = new ArrayList<>();
-        list.add("hostname: " + hostname);
-        list.add("hostaddress: " + hostaddress);
+        list.add("hostname: " + localHost.getHostName());
+        list.add("hostaddress: " + localHost.getHostAddress());
         list.add("port: " + port);
+        list.add("liveness: " + liveness.health());
+        list.add("readiness: " + readiness.health());
+        list.add("custom health: " + health.health());
         return list;
     }
 }

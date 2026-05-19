@@ -26,7 +26,10 @@ public class ToggleableReadinessIndicator extends ReadinessStateHealthIndicator 
     public AvailabilityState getState(ApplicationAvailability applicationAvailability) {
         log.info("health() called, ready={}", ready.get());
 
-        return ready.get() ? ReadinessState.ACCEPTING_TRAFFIC : ReadinessState.REFUSING_TRAFFIC;
+        AvailabilityState availabilityState = super.getState(applicationAvailability);
+        log.info("super.getState() returned {}", availabilityState);
+
+        return ready.get() ? availabilityState : ReadinessState.REFUSING_TRAFFIC;
     }
 
     public void setReady(boolean value) {
