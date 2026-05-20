@@ -7,4 +7,11 @@ public record ProductRequest(
         @NotBlank String name,
         @Positive double price
 ) {
+    @Override
+    public String toString() {
+        return "ProductRequest{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }
