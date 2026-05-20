@@ -1,5 +1,7 @@
 package at.fontain.liveness.health;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.health.actuate.endpoint.HealthEndpointGroups;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@Tag(name = "Health Simulation", description = "Toggle liveness, readiness, and custom health probe states")
 public class LivenessRest {
     private static final Logger log = LoggerFactory.getLogger(LivenessRest.class);
 
@@ -38,6 +41,7 @@ public class LivenessRest {
     }
 
     @GetMapping("/simulate/readiness/{state}")
+    @Operation(summary = "Toggle readiness probe", description = "Set to true (ACCEPTING_TRAFFIC) or false (REFUSING_TRAFFIC)")
     public String setReadiness(@PathVariable boolean state) {
         log.info("setReadiness({})", state);
         readiness.setReady(state);
@@ -45,6 +49,7 @@ public class LivenessRest {
     }
 
     @GetMapping("/simulate/liveness/{state}")
+    @Operation(summary = "Toggle liveness probe", description = "Set to true (CORRECT) or false (BROKEN)")
     public String setLiveness(@PathVariable boolean state) {
         log.info("setLiveness({})", state);
         liveness.setLive(state);
@@ -52,6 +57,7 @@ public class LivenessRest {
     }
 
     @GetMapping("/simulate/health/{state}")
+    @Operation(summary = "Toggle custom health indicator", description = "Set to true (UP) or false (DOWN)")
     public String setHealth(@PathVariable boolean state) {
         log.info("setHealth({})", state);
         health.setHealthy(state);
@@ -59,6 +65,7 @@ public class LivenessRest {
     }
 
     @GetMapping("/")
+    @Operation(summary = "Instance info", description = "Returns hostname, IP, port, and current health states")
     public List<String> root() throws UnknownHostException {
         InetAddress localHost = InetAddress.getLocalHost();
         int port = webServerContext.getWebServer().getPort();
