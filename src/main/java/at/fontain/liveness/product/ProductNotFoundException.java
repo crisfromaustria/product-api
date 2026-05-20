@@ -1,4 +1,4 @@
-package at.fontain.liveness;
+package at.fontain.liveness.product;
 
 import java.util.UUID;
 
