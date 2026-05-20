@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
@@ -31,5 +32,11 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining(", "));
         log.warn("Validation error: {}", detail);
         return ProblemDetail.forStatusAndDetail(BAD_REQUEST, detail);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ProblemDetail handleUnexpected(Exception ex) {
+        log.error("Unexpected error", ex);
+        return ProblemDetail.forStatusAndDetail(INTERNAL_SERVER_ERROR, "An unexpected error occurred");
     }
 }

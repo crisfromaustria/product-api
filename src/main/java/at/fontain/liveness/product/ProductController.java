@@ -29,6 +29,7 @@ public class ProductController {
     @GetMapping
     @Operation(summary = "List all products")
     @ApiResponse(responseCode = "200", description = "Products returned")
+    @ApiResponse(responseCode = "500", description = "Unexpected server error")
     public List<Product> getAll() {
         return service.getAll();
     }
@@ -37,6 +38,7 @@ public class ProductController {
     @Operation(summary = "Get a product by ID")
     @ApiResponse(responseCode = "200", description = "Product found")
     @ApiResponse(responseCode = "404", description = "Product not found")
+    @ApiResponse(responseCode = "500", description = "Unexpected server error")
     public Product getById(@PathVariable UUID id) {
         return service.getById(id);
     }
@@ -45,6 +47,7 @@ public class ProductController {
     @Operation(summary = "Create a new product")
     @ApiResponse(responseCode = "201", description = "Product created")
     @ApiResponse(responseCode = "400", description = "Validation error")
+    @ApiResponse(responseCode = "500", description = "Unexpected server error")
     public ResponseEntity<Product> create(@Valid @RequestBody ProductRequest request) {
         Product created = service.create(request);
         log.info("Created product id={}", created.id());
@@ -56,6 +59,7 @@ public class ProductController {
     @ApiResponse(responseCode = "200", description = "Product updated")
     @ApiResponse(responseCode = "400", description = "Validation error")
     @ApiResponse(responseCode = "404", description = "Product not found")
+    @ApiResponse(responseCode = "500", description = "Unexpected server error")
     public Product update(@PathVariable UUID id, @Valid @RequestBody ProductRequest request) {
         Product updated = service.update(id, request);
         log.info("Updated product id={}", updated.id());
@@ -66,6 +70,7 @@ public class ProductController {
     @Operation(summary = "Delete a product")
     @ApiResponse(responseCode = "204", description = "Product deleted")
     @ApiResponse(responseCode = "404", description = "Product not found")
+    @ApiResponse(responseCode = "500", description = "Unexpected server error")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
         log.info("Deleted product id={}", id);
