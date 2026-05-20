@@ -11,10 +11,13 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class LivenessRest {
     private static final Logger log = LoggerFactory.getLogger(LivenessRest.class);
+
+    private final List<Product> productList;
 
     private final ToggleableReadinessIndicator readiness;
     private final ToggleableLivenessIndicator liveness;
@@ -35,6 +38,14 @@ public class LivenessRest {
         this.groups = groups;
         this.registry = registry;
         this.webServerContext = webServerContext;
+        this.productList = new ArrayList<>();
+        init();
+    }
+
+    private void init() {
+        productList.add(new Product(UUID.fromString("00000000-0000-0000-0000-000000000001"), "Product 1", 10.0));
+        productList.add(new Product(UUID.fromString("00000000-0000-0000-0000-000000000002"), "Product 2", 20.0));
+        productList.add(new Product(UUID.fromString("00000000-0000-0000-0000-000000000003"), "Product 3", 30.0));
     }
 
     @GetMapping("/simulate/readiness/{state}")
@@ -73,5 +84,18 @@ public class LivenessRest {
         list.add("readiness: " + readiness.health());
         list.add("custom health: " + health.health());
         return list;
+    }
+
+    @GetMapping("/products")
+    public List<Product> getProductList() {
+        return this.productList;
+    }
+
+    @GetMapping("/products/{id}")
+    public Product getProductById(@PathVariable UUID id) {
+        return productList.stream()
+                .filter(p -> p.id().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 }
