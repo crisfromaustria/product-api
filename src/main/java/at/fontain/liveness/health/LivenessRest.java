@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.health.actuate.endpoint.HealthEndpointGroups;
 import org.springframework.boot.health.registry.HealthContributorRegistry;
 import org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.InetAddress;
@@ -77,5 +78,11 @@ public class LivenessRest {
         list.add("readiness: " + readiness.health());
         list.add("custom health: " + health.health());
         return list;
+    }
+
+    @GetMapping("favicon.ico")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ignoreFavicon() {
+        log.info("favicon.ico requested, returning 204 No Content");
     }
 }
